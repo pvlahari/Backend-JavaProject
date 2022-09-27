@@ -46,7 +46,7 @@ public class CustomerApiServiceImpl implements CustomerService {
 //		final List<Customer> customers = customerDao.getAllCustomers();		
 
 		// one way - not prefered
-		
+
 //		for (Customer customer : customers) {
 //			
 //			if (customer.getEmail().equals(customerApiDto.getEmail())) {
@@ -56,17 +56,18 @@ public class CustomerApiServiceImpl implements CustomerService {
 //			}
 //			
 //		}
-		
+
 		// other way - prefered way
-		
+
 		final Boolean customerExists = customerDao.checkCustomerExistsByMailId(customerApiDto.getEmail());
-		
+
 		if (customerExists == true) {
-			
-			throw new CustomerAlreadyExistsRuntimeException("The given customer already exists" + " " + customerApiDto.getEmail());
-			
+
+			throw new CustomerAlreadyExistsRuntimeException(
+					"The given customer already exists" + " " + customerApiDto.getEmail());
+
 		}
-		
+
 		// save customer after validation
 
 		final Customer newCustomer = new Customer();
@@ -81,12 +82,12 @@ public class CustomerApiServiceImpl implements CustomerService {
 	@Override
 	@Transactional
 	public CustomerApiDto getCustomerInfo(int customerId) {
-		
+
 		final Customer customer = customerDao.getCustomerById(customerId);
-		
+
 		if (customer == null) {
-			
-			throw new CustomerNotFoundException("The given customer Id not found" + " " +customerId);
+
+			throw new CustomerNotFoundException("The given customer Id not found" + " " + customerId);
 		}
 
 		final CustomerApiDto customerApiDto = mapperDaoToDto(customer); // Dao to Api mapper
@@ -98,9 +99,14 @@ public class CustomerApiServiceImpl implements CustomerService {
 	@Transactional
 	public CustomerApiDto updateCustomer(CustomerApiDto customerApiDto, int customerId) {
 
-		final Customer customer = customerDao.getCustomerById(customerId); 	// get existing customer by Id
+		final Customer customer = customerDao.getCustomerById(customerId); // get existing customer by Id
 
-		mapperDtoToDao(customerApiDto, customer); 	// update existing customer details
+		if (customer == null) {
+
+			throw new CustomerNotFoundException("The given customer Id not found" + " " + customerId);
+		}
+
+		mapperDtoToDao(customerApiDto, customer); // update existing customer details
 
 		customerDao.updateCustomerInfo(customer);
 
@@ -114,6 +120,11 @@ public class CustomerApiServiceImpl implements CustomerService {
 		Customer customer = new Customer();
 
 		customer = customerDao.getCustomerById(customerId);
+
+		if (customer == null) {
+
+			throw new CustomerNotFoundException("The given customer Id not found" + " " + customerId);
+		}
 
 		customer.setDeleted(true);
 		customer.setDeletedAt(new Date());

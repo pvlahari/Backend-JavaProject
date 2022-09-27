@@ -1,26 +1,43 @@
 package com.project.demo.dto;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class CustomerApiDto {
 
 	// fields
 
 	private int Id;
 
+	@NotBlank
+	@NotNull(message = "firstName cannot be null")
 	private String firstName;
 
 	private String lastName;
 
+	@Email
+	@NotBlank
+	@NotNull(message = "email cannot be null")
 	private String email;
 
+	@NotBlank
+	@NotNull(message = "city cannot be null")
 	private String city;
 
+	@NotNull(message = "pinCode cannot be null")
+	@Min(6)
 	private int pinCode;
 
+	@NotBlank
+	@NotNull(message = "role cannot be null")
 	private String role;
 
 	// constructors
-	
-	public CustomerApiDto() {};
+
+	public CustomerApiDto() {
+	};
 
 	public CustomerApiDto(int id, String firstName, String lastName, String email, String city, int pinCode,
 			String role) {

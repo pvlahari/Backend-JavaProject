@@ -11,8 +11,6 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -26,7 +24,6 @@ public class Customer {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = DATETIME_FORMAT)
-	@NotNull
 	@Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Date createdAt;
 
@@ -35,26 +32,21 @@ public class Customer {
 	@Column(name = "id")
 	private int id;
 
-	@NotNull
 	@Column(name = "first_name")
 	private String firstName;
 
 	@Column(name = "last_name")
 	private String lastName;
 
-	@NotNull
-	@Email
 	@Column(name = "email", unique = true)
 	private String email;
 
-	@NotNull
 	@Column(name = "city")
 	private String city;
 
 	@Column(name = "pincode")
 	private int pinCode;
 
-	@NotNull
 	@Column(name = "role")
 	private String role = "user";
 

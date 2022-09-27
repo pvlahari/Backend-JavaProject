@@ -1,53 +1,53 @@
 package com.project.demo.validators;
 
 import java.io.Serializable;
+import java.util.List;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.http.HttpStatus;
 
 public class ErrorMsgDto implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String field;
-	private String message;
+	private String globalMessage;
+	private List<ValidationErrorDto> validationErrors;
 	private String status;
 
 	// constructors
 
 	public ErrorMsgDto() {
 	}
-
-	public ErrorMsgDto(String field, String message, String status) {
-		this.field = field;
-		this.message = message;
-		this.status = status;
-	}
-
-	public ErrorMsgDto(final String message, final HttpStatus status) {
-		this.status = buildStatusString(status);
-		this.message = message;
-	}
 	
-    private String buildStatusString(final HttpStatus status) {
-        return status.toString() + " (" + status.getReasonPhrase() + ")";
-    }
 
+	public ErrorMsgDto(final String globalMessage, final HttpStatus status) {
+		this.globalMessage = globalMessage;
+		this.status = buildStatusString(status);
+	}
+
+	public ErrorMsgDto(final String globalMessage, final HttpStatus status,
+			final List<ValidationErrorDto> validationErrors) {
+		this.status = buildStatusString(status);
+		this.globalMessage = globalMessage;
+		this.validationErrors = validationErrors;
+	}
+
+	
+	private String buildStatusString(final HttpStatus status) {
+		return status.toString() + " (" + status.getReasonPhrase() + ")";
+	}
+
+	
 	// getters & setters
+	
 
-	public String getField() {
-		return field;
+	public String getGlobalMessage() {
+		return globalMessage;
 	}
 
-	public void setField(String field) {
-		this.field = field;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
+	public void setGlobalMessage(String globalMessage) {
+		this.globalMessage = globalMessage;
 	}
 
 	public String getStatus() {
@@ -58,6 +58,17 @@ public class ErrorMsgDto implements Serializable {
 		this.status = status;
 	}
 
-	
+	public List<ValidationErrorDto> getValidationErrors() {
+		return validationErrors;
+	}
+
+	public void setValidationErrors(List<ValidationErrorDto> validationErrors) {
+		this.validationErrors = validationErrors;
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	}
 
 }

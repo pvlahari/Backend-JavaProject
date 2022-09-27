@@ -1,5 +1,6 @@
 package com.project.demo.apicontroller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -16,16 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.demo.dto.CustomerApiDto;
 import com.project.demo.service.api.CustomerService;
+import com.project.demo.service.api.MessageService;
 import com.project.demo.service.impl.exception.CustomerAlreadyExistsRuntimeException;
 import com.project.demo.service.impl.exception.CustomerNotFoundException;
 import com.project.demo.validators.ErrorMsgDto;
+import com.project.demo.validators.ValidationErrorDto;
 
 @RestController
 @RequestMapping(value = "/customers")
 public class CustomerController {
 
+	private static final String INVALID_DATA = "Invalid Data";
+
 	@Autowired
 	private CustomerService customerService;
+
+	@Autowired
+	private MessageService messageService;
+
+	// private static List<ValidationErrorDto> errorList = new ArrayList<>();
 
 //	@GetMapping("/check")
 //	public String check() {
@@ -43,6 +53,10 @@ public class CustomerController {
 	@RequestMapping(path = "/register", method = RequestMethod.POST, consumes = "application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public CustomerApiDto registerCustomer(@RequestBody @Valid CustomerApiDto customerApiDto) {
+
+		// System.out.println("Controller" + "=>" + bindingResult);
+		// customerApiDtoValidator.validate(new
+		// CustomerApiDtoValidationWrapper(customerApiDto), bindingResult);
 
 		return customerService.registerCustomer(customerApiDto);
 	}
@@ -77,7 +91,8 @@ public class CustomerController {
 	@ExceptionHandler(CustomerAlreadyExistsRuntimeException.class)
 	public ErrorMsgDto handleException(final CustomerAlreadyExistsRuntimeException exception) {
 
-		return new ErrorMsgDto(exception.getMessage(), HttpStatus.BAD_REQUEST);
+		return new ErrorMsgDto(INVALID_DATA, HttpStatus.BAD_REQUEST,
+				Arrays.asList(new ValidationErrorDto(messageService.getString(exception.getMessage()))));
 
 	}
 
@@ -85,7 +100,11 @@ public class CustomerController {
 	@ExceptionHandler(CustomerNotFoundException.class)
 	public ErrorMsgDto handleException(final CustomerNotFoundException exception) {
 
-		return new ErrorMsgDto(exception.getMessage(), HttpStatus.BAD_REQUEST);
+		// return new ErrorMsgDto(INVALID_DATA, exception.getMessage(),
+		// HttpStatus.BAD_REQUEST);
+
+		return new ErrorMsgDto(INVALID_DATA, HttpStatus.BAD_REQUEST,
+				Arrays.asList(new ValidationErrorDto(messageService.getString(exception.getMessage()))));
 
 	}
 
